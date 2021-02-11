@@ -1,3 +1,13 @@
+Steps to launch web app
+
+1. cd to singhealth
+2. $nodemon server (might need to use linux terminal, or if you found a way to run this in windows terminal, let me know)
+3. open new terminal
+4. $npm start
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
