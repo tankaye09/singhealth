@@ -1,26 +1,35 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import { Layout, Menu } from 'antd';
+
+const { Header, Content, Footer } = Layout;
 
 export default class Navbar extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
-        <Link to="/" className="navbar-brand">SingHealth</Link>
-        <div className="collpase navbar-collapse">
-        <ul className="navbar-nav mr-auto">
-          <li className="navbar-item">
-          <Link to="/" className="nav-link">Audits</Link>
-          </li>
-          <li className="navbar-item">
-          <Link to="/create" className="nav-link">Create Audit</Link>
-          </li>
-          <li className="navbar-item">
-          <Link to="/user" className="nav-link">Create User</Link>
-          </li>
-        </ul>
-        </div>
-      </nav>
+      <Layout className="layout">
+        <Header>
+          <div className="logo" />
+          <Menu className="buttons" mode="horizontal" defaultSelectedKeys={['2']}>
+            <Menu.Item className="name" key="1">Audits
+              <li className="navbar-item">
+                <Link to="/" className="nav-link" />
+              </li>
+            </Menu.Item>
+            <Menu.Item key="2">Create Audit
+              <li className="navbar-item">
+                <Link to="/checklist" className="nav-link" />
+              </li>
+            </Menu.Item>
+            <Menu.Item key="3">Directory
+              <li className="navbar-item">
+                <Link to="/directory" className="nav-link" />
+              </li>
+            </Menu.Item>
+          </Menu>
+        </Header>
+      </Layout>
     );
   }
 }
