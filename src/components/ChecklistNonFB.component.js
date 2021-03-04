@@ -1,89 +1,78 @@
 import '../App.css';
 import { Collapse, Divider, List, Input, Checkbox } from 'antd';
-import React from 'react';
-// import { dataNonFB } from './ChecklistData';
+import React, { Component } from 'react';
 
-export default function ChecklistNonFB() {
+const { Panel } = Collapse;
 
-    //FOR DROPDOWN
-    const { Panel } = Collapse;
 
-    //FOR CHECKBOX:
-    const updateInput = (ref, checked) => {
-        const input = ref.current;
-        if (input) {
-            input.checked = checked;
-            input.indeterminate = checked == null;
+class ChecklistNonFB extends Component {
+    componentWillMount = () => {
+        this.selectedCheckboxes = new Set();
+      }
+    
+      toggleCheckbox = label => {
+        if (this.selectedCheckboxes.has(label)) {
+          this.selectedCheckboxes.delete(label);
+        } else {
+          this.selectedCheckboxes.add(label);
         }
-    };
+      }
+    
+      handleFormSubmit = formSubmitEvent => {
+        formSubmitEvent.preventDefault();
+    
+        for (const checkbox of this.selectedCheckboxes) {
+          console.log(checkbox, 'is selected.');
+        }
+      }
+    
+      createprofCheckbox = label => (
+        <Checkbox
+                label={label}
+                handleCheckboxChange={this.toggleCheckbox}
+                key={label}
+                onChange = {e => this.handleprofCheckCount(e)}
+            />
+      )
 
-    const ThreeStateCheckbox = ({ name, checked, onChange }) => {
-        const inputRef = React.useRef(null);
-        const checkedRef = React.useRef(checked);
-        React.useEffect(() => {
-            checkedRef.current = checked;
-            updateInput(inputRef, checked);
-        }, [checked]);
-        const handleClick = () => {
-            switch (checkedRef.current) {
-                case false:
-                    checkedRef.current = null;
-                    break;
-                case null:
-                    checkedRef.current = true;
-                    break;
-                default: // true
-                    checkedRef.current = false;
-                    break;
-            }
-            updateInput(inputRef, checkedRef.current);
-            if (onChange) {
-                onChange(checkedRef.current);
-            }
-        };
-        return (
-            <input
-                ref={inputRef}
-                type="checkbox"
-                name={name}
-                onClick={handleClick} />
-        );
-    };
-
-    const [checked, setChecked] = React.useState(true);
-    const handleChange = (checked) => {
-        console.log(`checked: ${checked}`);
-    };
-
-    //FOR REMARKS INPUT BOX
-    const { TextArea } = Input;
-
-    const onChange = e => {
-        console.log(e);
-    };
-
-    //
-
+      state={
+          checked:false,
+          profcount:0
+      }
+      handleprofCheckCount=(e)=>{
+          const {checked,type} = e.target;
+          if(type === "checkbox" && checked === true) {
+            this.setState(state => state.profcount++, this.logCount)
+          } else {
+            this.setState(state => state.profcount--, this.logCount)
+          }
+          
+      }
+ 
+render(){
     return (
         <>
-            <h2 className="start">Audit Checklist (Non-F&B)</h2>
+            <h1 className="start">Audit Checklist (Non-F&B)</h1>
 
             <Divider />
 
             <div>
                 <Collapse accordion defaultActiveKey="1" >
 
-                    <Panel header="1. Professionalism & Staff Hygiene (20%)" key="1" className="bg-orange text-white">
+                    <Panel header="1. Professionalism & Staff Hygiene" key="1" className="bg-orange text-white">
 
                         <Collapse accordion defaultActiveKey="1" >
                             <Panel header="Professionalism" key="1" className="bg-orange text-white">
                                 <List
-                                    // dataSource={dataNonFB.data1_1}
+                                    dataSource={['Shop is open and ready to service patients/visitors according to operating hours.',
+                                    'Staff Attendance: adequate staff for peak and non-peak hours.',
+                                    'At least one clearly assigned person in-charge on site.']}
                                     renderItem={item => (
                                         <List.Item>
                                             <div className="row justify-between">
                                                 {item}
-                                                <ThreeStateCheckbox checked={checked} onChange={handleChange} />
+                                                {this.createprofCheckbox()}
+
                                             </div>
                                         </List.Item>
                                     )}
@@ -92,23 +81,26 @@ export default function ChecklistNonFB() {
 
                             <Panel header="Staff Hygiene" key="2" className="bg-orange text-white">
                                 <List
-                                    // dataSource={dataNonFB.data1_2}
+                                    dataSource={['Staff uniform/attire is not soiled.',
+                                    'Staff who are unfit for work due to illness should not report to work',
+                                'Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.']}
                                     renderItem={item => (
                                         <List.Item>
                                             <div className="row justify-between">
                                                 {item}
-                                                <ThreeStateCheckbox checked={checked} onChange={handleChange} />
+                                                {this.createprofCheckbox()}
+                                                
                                             </div>
                                         </List.Item>
                                     )}
                                 />
                             </Panel>
                         </Collapse>
-                        <div class="pt-10 font-bold text-right">Score: __/20%</div>
+                        <div class="pt-10 font-bold text-right">Score: {Math.round(20/6*this.state.profcount)}/20</div>
 
                     </Panel>
 
-                    <Panel header="2. Housekeeping & General Cleanliness (40%)" key="2" className="bg-orange text-white">
+                    <Panel header="2. Housekeeping & General Cleanliness" key="2" className="bg-orange text-white">
                         <Collapse accordion defaultActiveKey="1" >
                             <Panel header="General Environment Cleanliness" key="1" className="bg-orange text-white">
                                 <List
@@ -117,17 +109,17 @@ export default function ChecklistNonFB() {
                                         <List.Item>
                                             <div className="row justify-between">
                                                 {item}
-                                                <ThreeStateCheckbox checked={checked} onChange={handleChange} />
+                                                
                                             </div>
                                         </List.Item>
                                     )}
                                 />
                             </Panel>
                         </Collapse>
-                        <div class="pt-10 font-bold text-right">Score: __/40%</div>
+                        <div class="pt-10 font-bold text-right">Score: __/40</div>
                     </Panel>
 
-                    <Panel header="3. Workplace Safety & Health (40%)" key="3" className="bg-orange text-white">
+                    <Panel header="3. Workplace Safety & Health" key="3" className="bg-orange text-white">
 
                         <Collapse accordion defaultActiveKey="1">
                             <Panel header="General Safety" key="1" className="bg-orange text-white">
@@ -137,7 +129,7 @@ export default function ChecklistNonFB() {
                                         <List.Item>
                                             <div className="row justify-between">
                                                 {item}
-                                                <ThreeStateCheckbox checked={checked} onChange={handleChange} />
+                                                
                                             </div>
                                         </List.Item>
                                     )}
@@ -151,7 +143,7 @@ export default function ChecklistNonFB() {
                                         <List.Item>
                                             <div className="row justify-between">
                                                 {item}
-                                                <ThreeStateCheckbox checked={checked} onChange={handleChange} />
+                                                
                                             </div>
                                         </List.Item>
                                     )}
@@ -165,21 +157,19 @@ export default function ChecklistNonFB() {
                                         <List.Item>
                                             <div className="row justify-between">
                                                 {item}
-                                                <ThreeStateCheckbox checked={checked} onChange={handleChange} />
+                                                
                                             </div>
                                         </List.Item>
                                     )}
                                 />
                             </Panel>
                         </Collapse>
-                        <div class="pt-10 font-bold text-right">Score: __/40%</div>
-
+                        <div class="pt-10 font-bold text-right">Score: __/40</div>
                     </Panel>
-
                 </Collapse>
             </div>
 
-            <div class="pt-20">
+           {/*  <div class="pt-20">
                 <TextArea placeholder="Remarks" allowClear onChange={onChange} />
             </div>
 
@@ -200,8 +190,10 @@ export default function ChecklistNonFB() {
             <div class="row justify-between font-bold">
                 <div>Total</div>
                 <div>__/100%</div>
-            </div>
+            </div> */}
         </>
 
     )
 }
+}
+export default ChecklistNonFB;
