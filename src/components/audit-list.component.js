@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Table, Tag, Space } from 'antd';
+import { getAudits } from '../data/AuditData.ts';
+
+const { Column, ColumnGroup } = Table;
 
 const Audit = props => (
     <tr>
@@ -8,9 +12,9 @@ const Audit = props => (
         <td>{props.audit.image}</td>
         <td>{props.audit.notes}</td>
         <td>{props.audit.tags}</td>
-        <td>{props.audit.date.substring(0,10)}</td>
+        <td>{props.audit.date.substring(0, 10)}</td>
         <td>
-            <Link to={"/edit/"+props.audit._id}>edit</Link> |
+            <Link to={"/edit/" + props.audit._id}>edit</Link> |
             <a href="#" onClick={() => { props.deleteAudit(props.audit._id) }}>delete</a>
         </td>
     </tr>
@@ -45,28 +49,43 @@ export default class AuditList extends Component {
 
     auditList() {
         return this.state.audits.map(currentaudit => {
-            return <Audit audit={currentaudit} deleteAudit={this.deleteAudit} key={currentaudit._id}/>;
+            return <Audit audit={currentaudit} deleteAudit={this.deleteAudit} key={currentaudit._id} />;
         })
     }
     render() {
         return (
-            <div>
-                <h3>Audits</h3>
-                <table className='table'>
-                    <thead className="thead-light">
-                        <tr>
-                            <th>Username</th>
-                            <th>Image</th>
-                            <th>Notes</th>
-                            <th>Tags</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { this.auditList() }
-                    </tbody>
-                </table>
+            <div className='table'>
+                <Table dataSource={data}>
+                    <Column title="Username" dataIndex="username" key="username" />
+                    <Column title="Image"
+                        dataIndex="image"
+                        key="image"
+                        render={(text, record) => (
+                            <a>
+                                <td onClick={() => window.open(text, "_blank")}>View Image</td>
+                            </a>
+                        )} />
+                    <Column title="Notes" dataIndex="notes" key="notes" />
+                    <Column title="Date" dataIndex="date" key="date" />
+                    <Column
+
+                        title="Tags"
+                        dataIndex="tags"
+                        key="tags"
+                        render={tags => (
+                            <>
+                                {tags.map(tag => (
+                                    <Tag color="blue" key={tag}>
+                                        {tag}
+                                    </Tag>
+                                ))}
+                            </>
+                        )}
+                    />
+                </Table>
             </div>
         )
     }
 }
+
+const data = getAudits("Pamela");

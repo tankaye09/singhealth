@@ -1,9 +1,9 @@
-import React, { Component, View } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { Component } from 'react';
 import axios from 'axios';
-import { Table, Tag, Space } from 'antd';
+import { Table } from 'antd';
 import { getData } from '../data/StoreData.ts';
+
+const { Column, ColumnGroup } = Table;
 
 
 export default class Directory extends Component {
@@ -29,42 +29,56 @@ export default class Directory extends Component {
 
             <div class='table'>
                 <Table
-                    columns={columns}
+                    // columns={columns}
                     dataSource={data}
                     bordered
                     title={() => 'CGH'}
                     size="middle"
                     pagination={{ position: 'bottomLeft' }}
-                />
+                >
+                    <Column title="Store Name" dataIndex="name" key="name"
+                        render={(text, record) => (
+                            <a>
+                                <td onClick={() => window.open(record.image, "_blank")}>{text}</td>
+                            </a>
+                        )} />
+                    <Column title="Location"
+                        dataIndex="location"
+                        key="location"
+                    />
+                    <Column title="Terms" dataIndex="terms" key="terms" />
+                    <Column title="Expiry" dataIndex="expiry" key="expiry" />
+                </Table>
             </div>
         )
     }
 
 }
 
-const columns = [
-    {
-        title: 'Store Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: text => <a>{text}</a>,
-    },
-    {
-        title: 'Location',
-        dataIndex: 'location',
-        key: 'location',
-    },
-    {
-        title: 'Terms',
-        dataIndex: 'terms',
-        key: 'terms',
-    },
-    {
-        title: 'Expiry',
-        dataIndex: 'expiry',
-        key: 'expiry',
-    },
-];
+// const columns = [
+//     {
+//         title: 'Store Name',
+//         dataIndex: 'name',
+//         key: 'name',
+//         render: (text, record) => <a>
+//             <td onClick={() => window.open(text, "_blank")} /> {text} </a>,
+//     },
+//     {
+//         title: 'Location',
+//         dataIndex: 'location',
+//         key: 'location',
+//     },
+//     {
+//         title: 'Terms',
+//         dataIndex: 'terms',
+//         key: 'terms',
+//     },
+//     {
+//         title: 'Expiry',
+//         dataIndex: 'expiry',
+//         key: 'expiry',
+//     },
+// ];
 
 const data = getData("");
 
